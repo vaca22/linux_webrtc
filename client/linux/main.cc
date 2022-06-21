@@ -62,34 +62,34 @@ class CustomSocketServer : public rtc::PhysicalSocketServer {
 };
 
 int main(int argc, char* argv[]) {
+      PeerConnectionClient client;
   gtk_init(&argc, &argv);
-
-  printf("fuck\n");
-
+////
+////  printf("fuck\n");
+////
   GtkMainWnd wnd("fuck", 9669,
                  false,
                  false);
   wnd.Create();
-
+////
   CustomSocketServer socket_server(&wnd);
-  rtc::AutoSocketServerThread thread(&socket_server);
+//  rtc::AutoSocketServerThread thread(&socket_server);
+//  rtc::InitializeSSL();
 
-  rtc::InitializeSSL();
-  PeerConnectionClient client;
   auto conductor = rtc::make_ref_counted<Conductor>(&client, &wnd);
   socket_server.set_client(&client);
   socket_server.set_conductor(conductor);
-
-  thread.Run();
-
+//
+//  thread.Run();
+//
   gtk_main();
-  wnd.Destroy();
+//  wnd.Destroy();
 
   while (gtk_events_pending()) {
     gtk_main_iteration();
   }
-
-  rtc::CleanupSSL();
+//
+//  rtc::CleanupSSL();
 while(1);
   return 0;
 }
