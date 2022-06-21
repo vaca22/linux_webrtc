@@ -12,12 +12,8 @@
 
 #include <stdlib.h>
 
-#ifdef WIN32
-#include <winsock2.h>
-#else
-#include <unistd.h>
-#endif
 
+#include <unistd.h>
 #include "rtc_base/arraysize.h"
 
 const char kAudioLabel[] = "audio_label";
