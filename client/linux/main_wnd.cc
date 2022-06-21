@@ -61,6 +61,7 @@ gboolean SimulateButtonClick(gpointer button) {
 gboolean OnKeyPressCallback(GtkWidget* widget,
                             GdkEventKey* key,
                             gpointer data) {
+    printf("keyDown\n");
   reinterpret_cast<GtkMainWnd*>(data)->OnKeyPress(widget, key);
   return false;
 }
