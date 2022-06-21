@@ -46,7 +46,7 @@ add_subdirectory(abseil-cpp)
 
 
 
-add_executable(client client/linux/main.cc  client/linux/main_wnd.cc client/conductor.cc client/defaults.cc client/peer_connection_client.cc)
+add_executable(client client/linux/main.cc  client/linux/main_wnd.cc client/conductor.cc client/defaults.cc)
 
 
 target_link_libraries(client  ${CMAKE_SOURCE_DIR}/libwebrtc.a

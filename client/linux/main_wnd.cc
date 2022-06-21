@@ -309,7 +309,7 @@ void GtkMainWnd::SwitchToConnectUI() {
     g_idle_add(SimulateButtonClick, button);
 }
 
-void GtkMainWnd::SwitchToPeerList(const Peers& peers) {
+void GtkMainWnd::SwitchToPeerList() {
   RTC_LOG(LS_INFO) << __FUNCTION__;
 
   if (!peer_list_) {
@@ -339,11 +339,9 @@ void GtkMainWnd::SwitchToPeerList(const Peers& peers) {
   }
 
   AddToList(peer_list_, "List of currently connected peers:", -1);
-  for (Peers::const_iterator i = peers.begin(); i != peers.end(); ++i)
-    AddToList(peer_list_, i->second.c_str(), i->first);
 
-  if (autocall_ && peers.begin() != peers.end())
-    g_idle_add(SimulateLastRowActivated, peer_list_);
+
+
 }
 
 void GtkMainWnd::SwitchToStreamingUI() {

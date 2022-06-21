@@ -20,7 +20,6 @@
 #include "api/media_stream_interface.h"
 #include "api/peer_connection_interface.h"
 #include "client/linux//main_wnd.h"
-#include "client/peer_connection_client.h"
 #include "rtc_base/thread.h"
 
 namespace webrtc {
@@ -33,7 +32,7 @@ class VideoRenderer;
 
 class Conductor : public webrtc::PeerConnectionObserver,
                   public webrtc::CreateSessionDescriptionObserver,
-                  public PeerConnectionClientObserver,
+
                   public MainWndCallback {
  public:
   enum CallbackID {
@@ -44,7 +43,7 @@ class Conductor : public webrtc::PeerConnectionObserver,
     TRACK_REMOVED,
   };
 
-  Conductor(PeerConnectionClient* client, MainWindow* main_wnd);
+  Conductor(MainWindow* main_wnd);
 
   bool connection_active() const;
 
@@ -85,19 +84,7 @@ class Conductor : public webrtc::PeerConnectionObserver,
   // PeerConnectionClientObserver implementation.
   //
 
-  void OnSignedIn() override;
 
-  void OnDisconnected() override;
-
-  void OnPeerConnected(int id, const std::string& name) override;
-
-  void OnPeerDisconnected(int id) override;
-
-  void OnMessageFromPeer(int peer_id, const std::string& message) override;
-
-  void OnMessageSent(int err) override;
-
-  void OnServerConnectionFailure() override;
 
   //
   // MainWndCallback implementation.
@@ -127,7 +114,6 @@ class Conductor : public webrtc::PeerConnectionObserver,
   rtc::scoped_refptr<webrtc::PeerConnectionInterface> peer_connection_;
   rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface>
       peer_connection_factory_;
-  PeerConnectionClient* client_;
   MainWindow* main_wnd_;
   std::deque<std::string*> pending_messages_;
   std::string server_;

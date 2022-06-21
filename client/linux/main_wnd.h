@@ -22,7 +22,7 @@
 #include "api/video/video_sink_interface.h"
 #include "client/linux/main_wnd.h"
 #include "client/main_wnd.h"
-#include "client/peer_connection_client.h"
+
 
 // Forward declarations.
 typedef struct _GtkWidget GtkWidget;
@@ -44,7 +44,7 @@ class GtkMainWnd : public MainWindow {
   virtual void RegisterObserver(MainWndCallback* callback);
   virtual bool IsWindow();
   virtual void SwitchToConnectUI();
-  virtual void SwitchToPeerList(const Peers& peers);
+  virtual void SwitchToPeerList();
   virtual void SwitchToStreamingUI();
   virtual void MessageBox(const char* caption, const char* text, bool is_error);
   virtual MainWindow::UI current_ui();

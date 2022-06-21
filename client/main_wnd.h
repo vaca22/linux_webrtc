@@ -17,7 +17,7 @@
 
 #include "api/media_stream_interface.h"
 #include "api/video/video_frame.h"
-#include "client/peer_connection_client.h"
+
 #include "media/base/media_channel.h"
 #include "media/base/video_common.h"
 #if defined(WEBRTC_WIN)
@@ -58,7 +58,7 @@ class MainWindow {
   virtual UI current_ui() = 0;
 
   virtual void SwitchToConnectUI() = 0;
-  virtual void SwitchToPeerList(const Peers& peers) = 0;
+  virtual void SwitchToPeerList() = 0;
   virtual void SwitchToStreamingUI() = 0;
 
   virtual void StartLocalRenderer(webrtc::VideoTrackInterface* local_video) = 0;

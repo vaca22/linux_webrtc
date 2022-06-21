@@ -7,7 +7,6 @@
 #include "conductor.h"
 #include "flag_defs.h"
 #include "main_wnd.h"
-#include "peer_connection_client.h"
 #include "rtc_base/physical_socket_server.h"
 #include "rtc_base/ref_counted_object.h"
 #include "rtc_base/ssl_adapter.h"
@@ -24,8 +23,8 @@ int main(int argc, char *argv[]) {
                    false);
     wnd.Create();
 
-    PeerConnectionClient client;
-    auto conductor = rtc::make_ref_counted<Conductor>(&client, &wnd);
+
+    auto conductor = rtc::make_ref_counted<Conductor>( &wnd);
 
     gtk_main();
     wnd.Destroy();
