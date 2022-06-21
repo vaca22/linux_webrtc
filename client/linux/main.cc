@@ -23,6 +23,10 @@ int main(int argc, char *argv[]) {
                    false,
                    false);
     wnd.Create();
+
+    PeerConnectionClient client;
+    auto conductor = rtc::make_ref_counted<Conductor>(&client, &wnd);
+
     gtk_main();
     wnd.Destroy();
 
