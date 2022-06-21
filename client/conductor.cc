@@ -411,6 +411,7 @@ void Conductor::OnServerConnectionFailure() {
 //
 
 void Conductor::StartLogin(const std::string& server, int port) {
+    printf("uiui\n");
   if (client_->is_connected())
     return;
   server_ = server;

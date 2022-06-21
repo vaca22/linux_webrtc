@@ -50,6 +50,7 @@ gboolean OnDestroyedCallback(GtkWidget* widget,
 }
 
 void OnClickedCallback(GtkWidget* widget, gpointer data) {
+    printf("gaga\n");
   reinterpret_cast<GtkMainWnd*>(data)->OnClicked(widget);
 }
 
@@ -276,13 +277,17 @@ void GtkMainWnd::SwitchToConnectUI() {
   GtkWidget* hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 
 
-  GtkWidget* label = gtk_label_new("Server");
+  GtkWidget* label = gtk_label_new("VacaX");
   gtk_container_add(GTK_CONTAINER(hbox), label);
 
   server_edit_ = gtk_entry_new();
   gtk_entry_set_text(GTK_ENTRY(server_edit_), server_.c_str());
-  gtk_widget_set_size_request(server_edit_, 400, 30);
+  gtk_widget_set_size_request(server_edit_, 100, 30);
   gtk_container_add(GTK_CONTAINER(hbox), server_edit_);
+
+    GtkWidget* label2 = gtk_label_new("port");
+    gtk_container_add(GTK_CONTAINER(hbox), label2);
+
 
   port_edit_ = gtk_entry_new();
   gtk_entry_set_text(GTK_ENTRY(port_edit_), port_.c_str());
@@ -377,6 +382,7 @@ void GtkMainWnd::OnClicked(GtkWidget* widget) {
   server_ = gtk_entry_get_text(GTK_ENTRY(server_edit_));
   port_ = gtk_entry_get_text(GTK_ENTRY(port_edit_));
   int port = port_.length() ? atoi(port_.c_str()) : 0;
+  printf("nknk\n");
   callback_->StartLogin(server_, port);
 }
 
