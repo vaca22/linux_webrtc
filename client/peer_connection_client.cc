@@ -1,13 +1,3 @@
-/*
- *  Copyright 2012 The WebRTC Project Authors. All rights reserved.
- *
- *  Use of this source code is governed by a BSD-style license
- *  that can be found in the LICENSE file in the root of the source
- *  tree. An additional intellectual property rights grant can be found
- *  in the file PATENTS.  All contributing project authors may
- *  be found in the AUTHORS file in the root of the source tree.
- */
-
 #include "client/peer_connection_client.h"
 
 #include "client/defaults.h"
@@ -464,11 +454,9 @@ void PeerConnectionClient::OnClose(rtc::Socket* socket, int err) {
 
   socket->Close();
 
-#ifdef WIN32
-  if (err != WSAECONNREFUSED) {
-#else
+
   if (err != ECONNREFUSED) {
-#endif
+
     if (socket == hanging_get_.get()) {
       if (state_ == CONNECTED) {
         hanging_get_->Close();
