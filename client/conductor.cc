@@ -267,7 +267,7 @@ void Conductor::OnIceCandidate(const webrtc::IceCandidateInterface* candidate) {
 void Conductor::StartLogin(const std::string& server, int port) {
     printf("uiui\n");
 
-  server_ = server;
+
 
 }
 

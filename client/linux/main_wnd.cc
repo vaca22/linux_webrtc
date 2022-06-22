@@ -277,29 +277,16 @@ void GtkMainWnd::SwitchToConnectUI() {
   GtkWidget* hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 
 
-  GtkWidget* label = gtk_label_new("VacaX");
-  gtk_container_add(GTK_CONTAINER(hbox), label);
-
-  server_edit_ = gtk_entry_new();
-  gtk_entry_set_text(GTK_ENTRY(server_edit_), server_.c_str());
-  gtk_widget_set_size_request(server_edit_, 100, 30);
-  gtk_container_add(GTK_CONTAINER(hbox), server_edit_);
-
-    GtkWidget* label2 = gtk_label_new("port");
-    gtk_container_add(GTK_CONTAINER(hbox), label2);
 
 
-  port_edit_ = gtk_entry_new();
-  gtk_entry_set_text(GTK_ENTRY(port_edit_), port_.c_str());
-  gtk_widget_set_size_request(port_edit_, 70, 30);
-  gtk_container_add(GTK_CONTAINER(hbox), port_edit_);
+
 
   GtkWidget* button = gtk_button_new_with_label("Connect");
   gtk_widget_set_size_request(button, 70, 30);
   g_signal_connect(button, "clicked", G_CALLBACK(OnClickedCallback), this);
   gtk_container_add(GTK_CONTAINER(hbox), button);
 
-  GtkWidget* halign = gtk_alignment_new(1, 0, 0, 0);
+  GtkWidget* halign = gtk_alignment_new(0.5f, 0, 0, 0);
   gtk_container_add(GTK_CONTAINER(halign), hbox);
   gtk_box_pack_start(GTK_BOX(vbox_), halign, FALSE, FALSE, 0);
 
@@ -373,15 +360,8 @@ void GtkMainWnd::OnDestroyed(GtkWidget* widget, GdkEvent* event) {
 }
 
 void GtkMainWnd::OnClicked(GtkWidget* widget) {
-  // Make the connect button insensitive, so that it cannot be clicked more than
-  // once.  Now that the connection includes auto-retry, it should not be
-  // necessary to click it more than once.
-  gtk_widget_set_sensitive(widget, false);
-  server_ = gtk_entry_get_text(GTK_ENTRY(server_edit_));
-  port_ = gtk_entry_get_text(GTK_ENTRY(port_edit_));
-  int port = port_.length() ? atoi(port_.c_str()) : 0;
   printf("nknk\n");
-  callback_->StartLogin(server_, port);
+  callback_->StartLogin(server_, 2234);
 }
 
 void GtkMainWnd::OnKeyPress(GtkWidget* widget, GdkEventKey* key) {
