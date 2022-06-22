@@ -16,6 +16,7 @@
 #include <memory>
 #include <utility>
 #include <vector>
+#include <iostream>
 
 #include "absl/memory/memory.h"
 #include "absl/types/optional.h"
@@ -136,7 +137,8 @@ bool Conductor::InitializePeerConnection() {
   }
   peer_connection_factory_ = webrtc::CreatePeerConnectionFactory(
       nullptr /* network_thread */, nullptr /* worker_thread */,
-      signaling_thread_.get(), nullptr /* default_adm */,
+      nullptr,//signaling_thread_.get(),
+      nullptr /* default_adm */,
       webrtc::CreateBuiltinAudioEncoderFactory(),
       webrtc::CreateBuiltinAudioDecoderFactory(),
       webrtc::CreateBuiltinVideoEncoderFactory(),
@@ -155,7 +157,7 @@ bool Conductor::InitializePeerConnection() {
     DeletePeerConnection();
   }
 
-  AddTracks();
+ // AddTracks();
 
   return peer_connection_ != nullptr;
 }
@@ -412,10 +414,19 @@ void Conductor::OnServerConnectionFailure() {
 //
 
 void Conductor::StartLogin(const std::string& server, int port) {
+    printf("fuckaa\n");
   if (client_->is_connected())
     return;
+    printf("fuckaa2\n");
   server_ = server;
-  client_->Connect(server, port, GetPeerName());
+  //client_->Connect(server, port, GetPeerName());
+    printf("fuckaa3\n");
+    if (InitializePeerConnection()) {
+        printf("gaga\n");
+        peer_id_ = 12;
+        peer_connection_->CreateOffer(
+                this, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
+    }
 }
 
 void Conductor::DisconnectFromServer() {
@@ -555,6 +566,7 @@ void Conductor::UIThreadCallback(int msg_id, void* data) {
 }
 
 void Conductor::OnSuccess(webrtc::SessionDescriptionInterface* desc) {
+    printf("uiuiuiui\n");
   peer_connection_->SetLocalDescription(
       DummySetSessionDescriptionObserver::Create(), desc);
 
@@ -581,6 +593,8 @@ void Conductor::OnSuccess(webrtc::SessionDescriptionInterface* desc) {
 }
 
 void Conductor::OnFailure(webrtc::RTCError error) {
+    printf("Fuck");
+    std::cout<<error.message();
   RTC_LOG(LS_ERROR) << ToString(error.type()) << ": " << error.message();
 }
 
