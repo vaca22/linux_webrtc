@@ -286,7 +286,7 @@ void GtkMainWnd::SwitchToConnectUI() {
   g_signal_connect(button, "clicked", G_CALLBACK(OnClickedCallback), this);
   gtk_container_add(GTK_CONTAINER(hbox), button);
 
-  GtkWidget* halign = gtk_alignment_new(0.5f, 0, 0, 0);
+  GtkWidget* halign = gtk_alignment_new(0.5f, 0.5f, 0, 0);
   gtk_container_add(GTK_CONTAINER(halign), hbox);
   gtk_box_pack_start(GTK_BOX(vbox_), halign, FALSE, FALSE, 0);
 
