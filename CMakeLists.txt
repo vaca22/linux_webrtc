@@ -46,9 +46,7 @@ add_subdirectory(abseil-cpp)
 
 
 
-add_executable(client client/linux/main.cc  client/linux/main_wnd.cc client/conductor.cc client/defaults.cc client/peer_connection_client.cc test/vcm_capturer.cc
-         test/linux/video_renderer_linux.cc
-        test/linux/glx_renderer.cc)
+add_executable(client client/linux/main.cc  client/linux/main_wnd.cc client/conductor.cc client/defaults.cc client/peer_connection_client.cc strings/json.cc)
 
 
 set(absl_LIBRARIES2
