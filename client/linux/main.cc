@@ -14,10 +14,10 @@
 
 #include "absl/flags/parse.h"
 #include "api/scoped_refptr.h"
-#include "examples/peerconnection/client/conductor.h"
-#include "examples/peerconnection/client/flag_defs.h"
-#include "examples/peerconnection/client/linux/main_wnd.h"
-#include "examples/peerconnection/client/peer_connection_client.h"
+#include "client/conductor.h"
+#include "client/flag_defs.h"
+#include "client/linux/main_wnd.h"
+#include "client/peer_connection_client.h"
 #include "rtc_base/physical_socket_server.h"
 #include "rtc_base/ref_counted_object.h"
 #include "rtc_base/ssl_adapter.h"
@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
   g_thread_init(NULL);
 #endif
 
-  absl::ParseCommandLine(argc, argv);
+
 
   // InitFieldTrialsFromString stores the char*, so the char array must outlive
   // the application.
@@ -82,17 +82,12 @@ int main(int argc, char* argv[]) {
       absl::GetFlag(FLAGS_force_fieldtrials);
   webrtc::field_trial::InitFieldTrialsFromString(forced_field_trials.c_str());
 
-  // Abort if the user specifies a port that is outside the allowed
-  // range [1, 65535].
-  if ((absl::GetFlag(FLAGS_port) < 1) || (absl::GetFlag(FLAGS_port) > 65535)) {
-    printf("Error: %i is not a valid port.\n", absl::GetFlag(FLAGS_port));
-    return -1;
-  }
 
-  const std::string server = absl::GetFlag(FLAGS_server);
-  GtkMainWnd wnd(server.c_str(), absl::GetFlag(FLAGS_port),
-                 absl::GetFlag(FLAGS_autoconnect),
-                 absl::GetFlag(FLAGS_autocall));
+
+  const std::string server = "localhost";
+  GtkMainWnd wnd(server.c_str(), 8888,
+                 false,
+                 false);
   wnd.Create();
 
   CustomSocketServer socket_server(&wnd);
@@ -107,15 +102,6 @@ int main(int argc, char* argv[]) {
 
   thread.Run();
 
-  // gtk_main();
-  wnd.Destroy();
 
-  // TODO(henrike): Run the Gtk main loop to tear down the connection.
-  /*
-  while (gtk_events_pending()) {
-    gtk_main_iteration();
-  }
-  */
-  rtc::CleanupSSL();
   return 0;
 }
