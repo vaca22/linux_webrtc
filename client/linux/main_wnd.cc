@@ -8,7 +8,7 @@
  *  be found in the AUTHORS file in the root of the source tree.
  */
 
-#include "client/linux/main_wnd.h"
+#include "examples/peerconnection/client/linux/main_wnd.h"
 
 #include <cairo.h>
 #include <gdk/gdk.h>
@@ -264,16 +264,20 @@ void GtkMainWnd::SwitchToConnectUI() {
     peer_list_ = NULL;
   }
 
-
+#if GTK_MAJOR_VERSION == 2
+  vbox_ = gtk_vbox_new(FALSE, 5);
+#else
   vbox_ = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-
+#endif
   GtkWidget* valign = gtk_alignment_new(0, 1, 0, 0);
   gtk_container_add(GTK_CONTAINER(vbox_), valign);
   gtk_container_add(GTK_CONTAINER(window_), vbox_);
 
-
+#if GTK_MAJOR_VERSION == 2
+  GtkWidget* hbox = gtk_hbox_new(FALSE, 5);
+#else
   GtkWidget* hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-
+#endif
 
   GtkWidget* label = gtk_label_new("Server");
   gtk_container_add(GTK_CONTAINER(hbox), label);
@@ -382,8 +386,11 @@ void GtkMainWnd::OnClicked(GtkWidget* widget) {
 void GtkMainWnd::OnKeyPress(GtkWidget* widget, GdkEventKey* key) {
   if (key->type == GDK_KEY_PRESS) {
     switch (key->keyval) {
-
+#if GTK_MAJOR_VERSION == 2
+      case GDK_Escape:
+#else
       case GDK_KEY_Escape:
+#endif
         if (draw_area_) {
           callback_->DisconnectFromCurrentPeer();
         } else if (peer_list_) {
@@ -391,10 +398,13 @@ void GtkMainWnd::OnKeyPress(GtkWidget* widget, GdkEventKey* key) {
         }
         break;
 
-
+#if GTK_MAJOR_VERSION == 2
+      case GDK_KP_Enter:
+      case GDK_Return:
+#else
       case GDK_KEY_KP_Enter:
       case GDK_KEY_Return:
-
+#endif
         if (vbox_) {
           OnClicked(NULL);
         } else if (peer_list_) {
@@ -480,15 +490,21 @@ void GtkMainWnd::OnRedraw() {
       }
     }
 
-
+#if GTK_MAJOR_VERSION == 2
+    gdk_draw_rgb_32_image(draw_area_->window,
+                          draw_area_->style->fg_gc[GTK_STATE_NORMAL], 0, 0,
+                          width_ * 2, height_ * 2, GDK_RGB_DITHER_MAX,
+                          draw_buffer_.get(), (width_ * 2) * 4);
+#else
     gtk_widget_queue_draw(draw_area_);
-
+#endif
   }
 
   gdk_threads_leave();
 }
 
 void GtkMainWnd::Draw(GtkWidget* widget, cairo_t* cr) {
+#if GTK_MAJOR_VERSION != 2
   cairo_format_t format = CAIRO_FORMAT_ARGB32;
   cairo_surface_t* surface = cairo_image_surface_create_for_data(
       draw_buffer_.get(), format, width_ * 2, height_ * 2,
@@ -497,6 +513,9 @@ void GtkMainWnd::Draw(GtkWidget* widget, cairo_t* cr) {
   cairo_rectangle(cr, 0, 0, width_ * 2, height_ * 2);
   cairo_fill(cr);
   cairo_surface_destroy(surface);
+#else
+  RTC_DCHECK_NOTREACHED();
+#endif
 }
 
 GtkMainWnd::VideoRenderer::VideoRenderer(
