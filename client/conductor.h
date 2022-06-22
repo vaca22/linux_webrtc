@@ -19,7 +19,7 @@
 
 #include "api/media_stream_interface.h"
 #include "api/peer_connection_interface.h"
-#include "client/linux//main_wnd.h"
+#include "client/main_wnd.h"
 #include "client/peer_connection_client.h"
 #include "rtc_base/thread.h"
 

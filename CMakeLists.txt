@@ -49,11 +49,30 @@ add_subdirectory(abseil-cpp)
 add_executable(client client/linux/main.cc  client/linux/main_wnd.cc client/conductor.cc client/defaults.cc client/peer_connection_client.cc)
 
 
+set(absl_LIBRARIES2
+        absl::algorithm
+        absl::base
+        absl::debugging
+        absl::flat_hash_map
+        absl::memory
+        absl::meta
+        absl::numeric
+        absl::str_format
+        absl::strings
+        absl::synchronization
+        absl::time
+        absl::flags
+        absl::flags_internal
+        absl::utility)
+
+
+
+
 target_link_libraries(client  ${CMAKE_SOURCE_DIR}/libwebrtc.a
         Threads::Threads
         ${GTK3_LIBRARIES} ${X11_LIBRARIES} ${CMAKE_DL_LIBS}
         ${CMAKE_DL_LIBS}
         ${CMAKE_SOURCE_DIR}/libjsoncpp.so.24
-        absl::flags
+        ${absl_LIBRARIES2}
         )
 

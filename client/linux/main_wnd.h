@@ -20,7 +20,6 @@
 #include "api/scoped_refptr.h"
 #include "api/video/video_frame.h"
 #include "api/video/video_sink_interface.h"
-#include "client/linux/main_wnd.h"
 #include "client/main_wnd.h"
 #include "client/peer_connection_client.h"
 

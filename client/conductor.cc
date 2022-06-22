@@ -81,13 +81,13 @@ class CapturerTrackSource : public webrtc::VideoTrackSource {
       return nullptr;
     }
     int num_devices = info->NumberOfDevices();
-//    for (int i = 0; i < num_devices; ++i) {
-//      capturer = absl::WrapUnique(
-//          webrtc::test::VcmCapturer::Create(kWidth, kHeight, kFps, i));
-//      if (capturer) {
-//        return rtc::make_ref_counted<CapturerTrackSource>(std::move(capturer));
-//      }
-//    }
+    for (int i = 0; i < num_devices; ++i) {
+      capturer = absl::WrapUnique(
+          webrtc::test::VcmCapturer::Create(kWidth, kHeight, kFps, i));
+      if (capturer) {
+        return rtc::make_ref_counted<CapturerTrackSource>(std::move(capturer));
+      }
+    }
 
     return nullptr;
   }
@@ -322,8 +322,8 @@ void Conductor::OnMessageFromPeer(int peer_id, const std::string& message) {
   std::string type_str;
   std::string json_object;
 
-//  rtc::GetStringFromJsonObject(jmessage, kSessionDescriptionTypeName,
-//                               &type_str);
+  rtc::GetStringFromJsonObject(jmessage, kSessionDescriptionTypeName,
+                               &type_str);
   if (!type_str.empty()) {
     if (type_str == "offer-loopback") {
       // This is a loopback call.
@@ -343,12 +343,12 @@ void Conductor::OnMessageFromPeer(int peer_id, const std::string& message) {
     }
     webrtc::SdpType type = *type_maybe;
     std::string sdp;
-//    if (!rtc::GetStringFromJsonObject(jmessage, kSessionDescriptionSdpName,
-//                                      &sdp)) {
-//      RTC_LOG(LS_WARNING)
-//          << "Can't parse received session description message.";
-//      return;
-//    }
+    if (!rtc::GetStringFromJsonObject(jmessage, kSessionDescriptionSdpName,
+                                      &sdp)) {
+      RTC_LOG(LS_WARNING)
+          << "Can't parse received session description message.";
+      return;
+    }
     webrtc::SdpParseError error;
     std::unique_ptr<webrtc::SessionDescriptionInterface> session_description =
         webrtc::CreateSessionDescription(type, sdp, &error);
@@ -371,14 +371,14 @@ void Conductor::OnMessageFromPeer(int peer_id, const std::string& message) {
     std::string sdp_mid;
     int sdp_mlineindex = 0;
     std::string sdp;
-//    if (!rtc::GetStringFromJsonObject(jmessage, kCandidateSdpMidName,
-//                                      &sdp_mid) ||
-//        !rtc::GetIntFromJsonObject(jmessage, kCandidateSdpMlineIndexName,
-//                                   &sdp_mlineindex) ||
-//        !rtc::GetStringFromJsonObject(jmessage, kCandidateSdpName, &sdp)) {
-//      RTC_LOG(LS_WARNING) << "Can't parse received message.";
-//      return;
-//    }
+    if (!rtc::GetStringFromJsonObject(jmessage, kCandidateSdpMidName,
+                                      &sdp_mid) ||
+        !rtc::GetIntFromJsonObject(jmessage, kCandidateSdpMlineIndexName,
+                                   &sdp_mlineindex) ||
+        !rtc::GetStringFromJsonObject(jmessage, kCandidateSdpName, &sdp)) {
+      RTC_LOG(LS_WARNING) << "Can't parse received message.";
+      return;
+    }
     webrtc::SdpParseError error;
     std::unique_ptr<webrtc::IceCandidateInterface> candidate(
         webrtc::CreateIceCandidate(sdp_mid, sdp_mlineindex, sdp, &error));
