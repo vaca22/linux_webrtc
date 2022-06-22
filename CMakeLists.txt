@@ -46,15 +46,17 @@ add_subdirectory(abseil-cpp)
 
 
 
-add_executable(client client/linux/main.cc  client/linux/main_wnd.cc client/conductor.cc client/defaults.cc client/peer_connection_client.cc)
+add_executable(client client/linux/main.cc  client/linux/main_wnd.cc client/conductor.cc client/defaults.cc client/peer_connection_client.cc test/vcm_capturer.cc
+         test/linux/video_renderer_linux.cc
+        test/linux/glx_renderer.cc)
 
 
 set(absl_LIBRARIES2
         absl::flags
         absl::flags_parse
         )
-
-
+find_package(OpenGL REQUIRED)
+include_directories(${OpenGL_INCLUDE_DIRS})
 
 
 
@@ -64,5 +66,6 @@ target_link_libraries(client  ${CMAKE_SOURCE_DIR}/libwebrtc.a
         ${CMAKE_DL_LIBS}
         ${CMAKE_SOURCE_DIR}/libjsoncpp.so.24
         ${absl_LIBRARIES2}
+        ${OPENGL_LIBRARIES}
         )
 
