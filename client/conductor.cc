@@ -128,13 +128,10 @@ bool Conductor::InitializePeerConnection() {
   RTC_DCHECK(!peer_connection_factory_);
   RTC_DCHECK(!peer_connection_);
 
-  if (!signaling_thread_.get()) {
-    signaling_thread_ = rtc::Thread::CreateWithSocketServer();
-    signaling_thread_->Start();
-  }
+
   peer_connection_factory_ = webrtc::CreatePeerConnectionFactory(
       nullptr /* network_thread */, nullptr /* worker_thread */,
-      signaling_thread_.get(), nullptr /* default_adm */,
+      nullptr , nullptr /* default_adm */,
       webrtc::CreateBuiltinAudioEncoderFactory(),
       webrtc::CreateBuiltinAudioDecoderFactory(),
       webrtc::CreateBuiltinVideoEncoderFactory(),
@@ -145,12 +142,18 @@ bool Conductor::InitializePeerConnection() {
     main_wnd_->MessageBox("Error", "Failed to initialize PeerConnectionFactory",
                           true);
     DeletePeerConnection();
+      printf("goodx1\n");
     return false;
+  }else{
+      printf("good\n");
   }
 
   if (!CreatePeerConnection()) {
     main_wnd_->MessageBox("Error", "CreatePeerConnection failed", true);
     DeletePeerConnection();
+      printf("good1\n");
+  }else{
+      printf("good2\n");
   }
 
   AddTracks();
@@ -231,6 +234,7 @@ void Conductor::OnRemoveTrack(
 }
 
 void Conductor::OnIceCandidate(const webrtc::IceCandidateInterface* candidate) {
+    printf("fuckaacc\n");
   RTC_LOG(LS_INFO) << __FUNCTION__ << " " << candidate->sdp_mline_index();
   // For loopback test. To save some connecting delay.
   if (loopback_) {
@@ -268,6 +272,11 @@ void Conductor::StartLogin(const std::string& server, int port) {
     printf("uiui\n");
 
 
+    if (InitializePeerConnection()) {
+        printf("uiui222\n");
+        peer_connection_->CreateOffer(
+                this, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
+    }
 
 }
 
@@ -284,12 +293,14 @@ void Conductor::ConnectToPeer(int peer_id) {
         "Error", "We only support connecting to one peer at a time", true);
     return;
   }
-
+    printf("fuckaacc555\n");
   if (InitializePeerConnection()) {
     peer_id_ = peer_id;
+      printf("fuckaacc1\n");
     peer_connection_->CreateOffer(
         this, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
   } else {
+      printf("fuckaacc2\n");
     main_wnd_->MessageBox("Error", "Failed to initialize PeerConnection", true);
   }
 }
@@ -299,31 +310,9 @@ void Conductor::AddTracks() {
     return;  // Already added tracks.
   }
 
-  rtc::scoped_refptr<webrtc::AudioTrackInterface> audio_track(
-      peer_connection_factory_->CreateAudioTrack(
-          kAudioLabel, peer_connection_factory_->CreateAudioSource(
-                           cricket::AudioOptions())));
-  auto result_or_error = peer_connection_->AddTrack(audio_track, {kStreamId});
-  if (!result_or_error.ok()) {
-    RTC_LOG(LS_ERROR) << "Failed to add audio track to PeerConnection: "
-                      << result_or_error.error().message();
-  }
 
-  rtc::scoped_refptr<CapturerTrackSource> video_device =
-      CapturerTrackSource::Create();
-  if (video_device) {
-    rtc::scoped_refptr<webrtc::VideoTrackInterface> video_track_(
-        peer_connection_factory_->CreateVideoTrack(kVideoLabel, video_device));
-    main_wnd_->StartLocalRenderer(video_track_);
 
-    result_or_error = peer_connection_->AddTrack(video_track_, {kStreamId});
-    if (!result_or_error.ok()) {
-      RTC_LOG(LS_ERROR) << "Failed to add video track to PeerConnection: "
-                        << result_or_error.error().message();
-    }
-  } else {
-    RTC_LOG(LS_ERROR) << "OpenVideoCaptureDevice failed";
-  }
+
 
   main_wnd_->SwitchToStreamingUI();
 }
@@ -399,6 +388,7 @@ void Conductor::UIThreadCallback(int msg_id, void* data) {
 }
 
 void Conductor::OnSuccess(webrtc::SessionDescriptionInterface* desc) {
+    printf("fuckaa\n");
   peer_connection_->SetLocalDescription(
       DummySetSessionDescriptionObserver::Create(), desc);
 
@@ -421,10 +411,13 @@ void Conductor::OnSuccess(webrtc::SessionDescriptionInterface* desc) {
   jmessage[kSessionDescriptionTypeName] =
       webrtc::SdpTypeToString(desc->GetType());
   jmessage[kSessionDescriptionSdpName] = sdp;
+  printf("%s",sdp.c_str());
   SendMessage(writer.write(jmessage));
 }
 
 void Conductor::OnFailure(webrtc::RTCError error) {
+    printf("fuckbb\n");
+
   RTC_LOG(LS_ERROR) << ToString(error.type()) << ": " << error.message();
 }
 

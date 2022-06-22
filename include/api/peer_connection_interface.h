@@ -718,8 +718,8 @@ class RTC_EXPORT PeerConnectionInterface : public rtc::RefCountInterface {
     //
     // If set to 0, the generated directional attribute will not include the
     // "recv" direction (meaning it will be "sendonly" or "inactive".
-    int offer_to_receive_video = kUndefined;
-    int offer_to_receive_audio = kUndefined;
+    int offer_to_receive_video = 0;
+    int offer_to_receive_audio = 0;
 
     bool voice_activity_detection = true;
     bool ice_restart = false;
