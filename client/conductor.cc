@@ -131,13 +131,13 @@ bool Conductor::InitializePeerConnection() {
   RTC_DCHECK(!peer_connection_factory_);
   RTC_DCHECK(!peer_connection_);
 
-  if (!signaling_thread_.get()) {
-    signaling_thread_ = rtc::Thread::CreateWithSocketServer();
+
+    signaling_thread_ = rtc::Thread::Create();
     signaling_thread_->Start();
-  }
+
   peer_connection_factory_ = webrtc::CreatePeerConnectionFactory(
       nullptr /* network_thread */, nullptr /* worker_thread */,
-      nullptr,//signaling_thread_.get(),
+      signaling_thread_.get(),
       nullptr /* default_adm */,
       webrtc::CreateBuiltinAudioEncoderFactory(),
       webrtc::CreateBuiltinAudioDecoderFactory(),
@@ -145,19 +145,10 @@ bool Conductor::InitializePeerConnection() {
       webrtc::CreateBuiltinVideoDecoderFactory(), nullptr /* audio_mixer */,
       nullptr /* audio_processing */);
 
-  if (!peer_connection_factory_) {
-    main_wnd_->MessageBox("Error", "Failed to initialize PeerConnectionFactory",
-                          true);
-    DeletePeerConnection();
-    return false;
-  }
 
-  if (!CreatePeerConnection()) {
-    main_wnd_->MessageBox("Error", "CreatePeerConnection failed", true);
-    DeletePeerConnection();
-  }
 
- // AddTracks();
+  CreatePeerConnection();
+
 
   return peer_connection_ != nullptr;
 }
@@ -409,21 +400,15 @@ void Conductor::OnServerConnectionFailure() {
                         true);
 }
 
-//
-// MainWndCallback implementation.
-//
+
 
 void Conductor::StartLogin(const std::string& server, int port) {
-    printf("fuckaa\n");
-  if (client_->is_connected())
-    return;
-    printf("fuckaa2\n");
-  server_ = server;
-  //client_->Connect(server, port, GetPeerName());
+
     printf("fuckaa3\n");
     if (InitializePeerConnection()) {
         printf("gaga\n");
         peer_id_ = 12;
+
         peer_connection_->CreateOffer(
                 this, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
     }
@@ -567,35 +552,11 @@ void Conductor::UIThreadCallback(int msg_id, void* data) {
 
 void Conductor::OnSuccess(webrtc::SessionDescriptionInterface* desc) {
     printf("uiuiuiui\n");
-  peer_connection_->SetLocalDescription(
-      DummySetSessionDescriptionObserver::Create(), desc);
 
-  std::string sdp;
-  desc->ToString(&sdp);
-
-  // For loopback test. To save some connecting delay.
-  if (loopback_) {
-    // Replace message type from "offer" to "answer"
-    std::unique_ptr<webrtc::SessionDescriptionInterface> session_description =
-        webrtc::CreateSessionDescription(webrtc::SdpType::kAnswer, sdp);
-    peer_connection_->SetRemoteDescription(
-        DummySetSessionDescriptionObserver::Create(),
-        session_description.release());
-    return;
-  }
-
-  Json::StyledWriter writer;
-  Json::Value jmessage;
-  jmessage[kSessionDescriptionTypeName] =
-      webrtc::SdpTypeToString(desc->GetType());
-  jmessage[kSessionDescriptionSdpName] = sdp;
-  SendMessage(writer.write(jmessage));
 }
 
 void Conductor::OnFailure(webrtc::RTCError error) {
-    printf("Fuck");
-    std::cout<<error.message();
-  RTC_LOG(LS_ERROR) << ToString(error.type()) << ": " << error.message();
+    printf("Fuck\n");
 }
 
 void Conductor::SendMessage(const std::string& json_object) {
