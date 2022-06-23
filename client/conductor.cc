@@ -552,7 +552,9 @@ void Conductor::UIThreadCallback(int msg_id, void* data) {
 
 void Conductor::OnSuccess(webrtc::SessionDescriptionInterface* desc) {
     printf("uiuiuiui\n");
-
+    std::string sdp;
+    desc->ToString(&sdp);
+    printf("%d\n",sdp.c_str());
 }
 
 void Conductor::OnFailure(webrtc::RTCError error) {
